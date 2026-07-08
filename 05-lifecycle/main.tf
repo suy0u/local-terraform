@@ -2,6 +2,9 @@
 # tflocal
 # Build Web Server
 #------------------------------------------------------
+resource "aws_eip" "test_static_ip" {
+  instance = aws_instance.web_server.id
+}
 
 resource "aws_instance" "web_server" {
   ami                    = "ami-024f768332f0"  
@@ -10,7 +13,7 @@ resource "aws_instance" "web_server" {
   user_data = templatefile("user_data.sh.tpl", {
     f_name = "Mustermann",
     l_name = "Muster",
-    names  = ["Max", "Nico", "Peter", "Alice", "Megan", "Ron"]
+    names  = ["Max", "Nico", "Peter", "Alice", "Megan", "Richard"]
   })
   
   user_data_replace_on_change = true
@@ -21,7 +24,7 @@ resource "aws_instance" "web_server" {
   }
   
   lifecycle {
-    ignore_changes = [ami, user_data]
+    create_before_destroy = true
   }
 
 }
