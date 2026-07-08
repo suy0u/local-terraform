@@ -10,7 +10,7 @@ resource "aws_instance" "web_server" {
   user_data = templatefile("user_data.sh.tpl", {
     f_name = "Mustermann",
     l_name = "Muster",
-    names  = ["Max", "Nico", "Peter", "Alice", "Megan", "Lukas"]
+    names  = ["Max", "Nico", "Peter", "Alice", "Megan", "Ron"]
   })
   
   user_data_replace_on_change = true
@@ -21,8 +21,9 @@ resource "aws_instance" "web_server" {
   }
   
   lifecycle {
-    prevent_destroy = true
+    ignore_changes = [ami, user_data]
   }
+
 }
 
 
