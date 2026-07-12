@@ -1,3 +1,12 @@
+data "aws_region" "current" {}
+data "aws_availability_zones" "available" {}
+
+locals {
+  az_list            = join(",", data.aws_availability_zones.available.names)
+  region_description = data.aws_region.current.description
+  location           = "In ${local.region_description} there are AZ: ${local.az_list}" 
+}
+
 data "aws_ami" "latest_amazon_linux" {
   owners      = ["amazon"]
   most_recent = true
@@ -11,7 +20,7 @@ data "aws_ami" "latest_amazon_linux" {
 #-----------------------------------------------------------
 resource "aws_eip" "static_ip" {
   instance = aws_instance.server.id
-  tags = merge(var.common_tags, {Name = "${var.common_tags["Environment"]} Server IP"})
+  tags = merge(var.common_tags, {Name = "${var.common_tags["Environment"]} Server IP", Location = local.location})
 }
 
 resource "aws_instance" "server" {
